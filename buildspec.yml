@@ -1,24 +1,28 @@
 version: 0.2
-
 env:
-    variables:
-        CACHE_CONTROL: "86400"
-        S3_BUCKET: "pvc-angular-app"
-        BUILD_FOLDER: "dist"
+  variables:
+    S3_BUCKET: "pvc-angular-app"
+    
 phases:
   install:
     runtime-versions:
-        nodejs: 12
+      nodejs: 12
+  pre_build:
     commands:
-        - echo Installing source NPM dependencies...
-        - npm install
-        - npm install -g @angular/cli
+      - echo Installing source NPM dependencies...
+      - npm install
+      - npm install -g @angular/cli
   build:
     commands:
-        - echo Build started 
-        - ng build --prod
+      - echo Build started on `date`
+      - ng build --prod --aot
+  post_build:
+     commands:
+      - aws s3 cp dist s3://${S3_BUCKET} --recursive
+      - echo Build completed on `date`
 artifacts:
-    files:
-        - '**/*'
-    base-directory: 'dist*'
-    discard-paths: yes
+  files:
+      - '**/*'
+  base-directory: 'dist*'
+  discard-paths: yes    
+    
