@@ -1,7 +1,7 @@
 version: 0.2
 env:
   variables:
-    S3_BUCKET: "pvc-angular-app"
+    S3_BUCKET: "pvc-angular-app-2020"
     
 phases:
   install:
